@@ -13,31 +13,81 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32-v3.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon-v3.png" />
-  <link rel="stylesheet" href="./styles.css?v=20260810-1" />
+  <link rel="stylesheet" href="./styles.css?v=20260905-1" />
 </head>
 <body>
 <div class="app">
   <section class="screen active home" id="screen-home">
-    <div class="top"><div class="brand">TRAINING PLANNER</div></div>
+    <div class="top home-top"><div class="brand">TRAINING PLANNER</div></div>
     <h1 class="title home-title">練習メニュー</h1>
     <div class="home-menu">
-      <button class="home-card" data-go="create"><span class="home-icon icon-plan" aria-hidden="true"></span><span class="home-copy"><strong>メニュー表作成</strong></span><span class="chevron">›</span></button>
-      <button class="home-card" data-go="list"><span class="home-icon icon-list" aria-hidden="true"></span><span class="home-copy"><strong>メニュー一覧</strong></span><span class="chevron">›</span></button>
-      <button class="home-card" data-go="categories"><span class="home-icon icon-categories" aria-hidden="true"></span><span class="home-copy"><strong>分類一覧</strong></span><span class="chevron">›</span></button>
-      <button class="home-card" data-go="history"><span class="home-icon icon-history" aria-hidden="true"></span><span class="home-copy"><strong>練習メニュー履歴</strong></span><span class="chevron">›</span></button>
+      <button class="home-card home-card-primary" data-go="create"><span class="home-icon icon-plan" aria-hidden="true"></span><span class="home-copy"><strong>メニュー表作成</strong></span><span class="chevron" aria-hidden="true">›</span></button>
+      <button class="home-card" data-go="list"><span class="home-icon icon-list" aria-hidden="true"></span><span class="home-copy"><strong>メニュー一覧</strong></span><span class="chevron" aria-hidden="true">›</span></button>
+      <button class="home-card" data-go="categories"><span class="home-icon icon-categories" aria-hidden="true"></span><span class="home-copy"><strong>分類一覧</strong></span><span class="chevron" aria-hidden="true">›</span></button>
+      <button class="home-card" data-go="history"><span class="home-icon icon-history" aria-hidden="true"></span><span class="home-copy"><strong>練習メニュー履歴</strong></span><span class="chevron" aria-hidden="true">›</span></button>
     </div>
     <a class="home-footer" href="./privacy.html">プライバシーポリシー</a>
   </section>
-  <section class="screen" id="screen-create"><div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">メニュー表作成</h1><span class="top-spacer"></span></div><div class="static-area create-fields"><div class="field-block"><label class="label">分類</label><div class="chips category-box" id="createCategoryChips"></div></div><div class="field-block"><label class="label" for="sheetTitle">メニュー表の名前</label><input class="text-input" id="sheetTitle" value="" placeholder="例：8月5日の練習"></div><div class="field-block menu-field"><div class="label-row"><label class="label">メニュー</label><span class="count-badge" id="selectedMenuCount">0件選択</span></div><div class="card menu-select-card" id="menuSelectList"></div></div></div><div class="bottom"><button class="primary" id="startSetBtn">メニューを選択</button></div></section>
-  <section class="screen" id="screen-sets"><div class="top"><button class="back" data-go="create" aria-label="メニュー選択に戻る">‹</button><h1 class="title">セット数</h1><span class="top-spacer"></span></div><div class="sub-title">メニュー表名：<strong id="setSheetTitle">メニュー表</strong></div><div class="people-box"><div class="people-title">比較する人数を2つまで選択</div><div class="chips" id="peopleSelect"></div></div><div class="card table-card"><table class="set-table"><thead id="setHead"></thead><tbody id="setRows"></tbody></table></div><div class="summary"><div class="summary-card"><div class="summary-grid"><div>合計人set</div><div class="set-total-line" id="setTotalsLine"></div><div>所要時間</div><div><span class="big" id="totalTime">0分 0秒</span></div></div><div class="note" id="totalNote"></div></div><div class="status ok" id="statusBox" aria-live="polite">出力可</div></div><div class="bottom"><button class="primary" id="exportImageBtn">画像出力</button></div></section>
-  <section class="screen" id="screen-add"><div class="top"><button class="back" data-go="list" aria-label="メニュー一覧に戻る">‹</button><h1 class="title" id="addTitle">メニュー追加</h1><span class="top-spacer"></span></div><div class="static-area form-scroll"><div class="card form-card"><div class="field-block"><label class="label" for="menuName">名前</label><input class="text-input" id="menuName" placeholder="例：基礎練習"></div><div class="field-block"><label class="label">分類</label><button class="select-button" id="addCategoryBtn"><b id="addCategoryText">分類を選択</b><span>⌄</span></button><div class="drop-panel" id="addCategoryPanel"></div></div><button class="toggle-card" id="fixedToggle" type="button"><div><h3>固定時間のメニュー</h3><p>セット数に関係なく、1回分の時間で計算します</p></div><span class="switch" id="fixedSwitch" aria-hidden="true"></span></button><div class="field-block"><label class="label" id="timeLabel">時間（1set・1人）</label><div class="time-input-row" role="group" aria-labelledby="timeLabel"><label class="time-input"><input class="num-input" id="menuMinutes" type="number" min="0" step="1" inputmode="numeric" placeholder="0" aria-label="分"><span>分</span></label><label class="time-input"><input class="num-input" id="menuSecondsPart" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0" aria-label="秒"><span>秒</span></label></div></div></div></div><div class="bottom"><button class="primary" id="saveMenuBtn">保存</button></div></section>
-  <section class="screen" id="screen-categories"><div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">分類一覧</h1><span class="top-spacer"></span></div><div class="scroll-area" id="categoryList"></div></section>
-  <section class="screen" id="screen-list"><div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">メニュー一覧</h1><button class="top-action" id="menuAddTopBtn">追加</button></div><div class="list-title-row"><div><span class="label section-label">分類</span><span class="list-count" id="listCount"></span></div><button class="mini-btn reorder-toggle" id="reorderToggle" aria-pressed="false">並び替え</button></div><div class="chips category-box" id="categoryChips"></div><p class="helper-text" id="reorderHint" hidden>右の持ち手をドラッグ。同じ分類内で並び替えできます。</p><div class="scroll-area" id="menuList"></div><div class="sr-only" id="reorderStatus" aria-live="polite"></div></section>
-  <section class="screen" id="screen-history"><div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">練習メニュー履歴</h1><span class="top-spacer"></span></div><p class="history-lead">写真を押すと、大きく表示できます</p><div class="scroll-area history-list" id="historyList"></div></section>
+
+  <section class="screen flow-screen" id="screen-create">
+    <div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">メニュー表作成</h1><span class="top-spacer"></span></div>
+    <div class="progress-steps" aria-label="作成の進行状況"><span class="active" aria-current="step">1 メニュー</span><span>2 セット</span><span>3 出力</span></div>
+    <div class="flow-scroll create-fields">
+      <div class="field-block"><label class="label" for="sheetTitle">メニュー表の名前</label><input class="text-input" id="sheetTitle" value="" placeholder="例：9月5日の練習"></div>
+      <div class="field-block"><label class="label">分類</label><div class="chips category-box" id="createCategoryChips" role="tablist" aria-label="分類"></div></div>
+      <div class="field-block menu-field"><div class="label-row"><span class="label">メニュー</span><span class="count-badge" id="selectedMenuCount">0件選択</span></div><div class="menu-select-card" id="menuSelectList"></div></div>
+    </div>
+    <div class="bottom flow-actions"><button class="secondary" data-go="home">戻る</button><button class="primary" id="startSetBtn" disabled>メニューを選択</button></div>
+  </section>
+
+  <section class="screen flow-screen" id="screen-sets">
+    <div class="top"><button class="back" data-go="create" aria-label="メニュー選択に戻る">‹</button><h1 class="title">セット数・人数</h1><span class="top-spacer"></span></div>
+    <div class="progress-steps" aria-label="作成の進行状況"><span>1 メニュー</span><span class="active" aria-current="step">2 セット</span><span>3 出力</span></div>
+    <div class="sub-title">メニュー表名：<strong id="setSheetTitle">メニュー表</strong></div>
+    <div class="flow-scroll sets-scroll">
+      <div class="people-box"><div class="people-title">比較する人数を2つまで選択</div><div class="chips" id="peopleSelect"></div></div>
+      <div class="table-card"><table class="set-table"><thead id="setHead"></thead><tbody id="setRows"></tbody></table></div>
+      <div class="summary"><div class="summary-card"><div class="summary-grid"><div>合計人set</div><div class="set-total-line" id="setTotalsLine"></div><div>所要時間</div><div><span class="big" id="totalTime">0分 0秒</span></div></div><div class="note" id="totalNote"></div></div><div class="status ok" id="statusBox" aria-live="polite">出力可</div></div>
+    </div>
+    <div class="bottom flow-actions"><button class="secondary" data-go="create">戻る</button><button class="primary" id="exportImageBtn">画像を確認</button></div>
+  </section>
+
+  <section class="screen" id="screen-add">
+    <div class="top"><button class="back" data-go="list" aria-label="メニュー一覧に戻る">‹</button><h1 class="title" id="addTitle">メニュー追加</h1><span class="top-spacer"></span></div>
+    <div class="form-scroll">
+      <div class="field-block"><label class="label" for="menuName">名前</label><input class="text-input" id="menuName" placeholder="例：基礎練習" aria-describedby="menuNameError"><p class="field-error" id="menuNameError"></p></div>
+      <div class="field-block"><label class="label" for="addCategoryBtn">分類</label><button class="select-button" id="addCategoryBtn" aria-haspopup="listbox" aria-describedby="menuCategoryError"><b id="addCategoryText">分類を選択</b><span aria-hidden="true">⌄</span></button><div class="drop-panel" id="addCategoryPanel" role="listbox"></div><p class="field-error" id="menuCategoryError"></p></div>
+      <fieldset class="field-block method-field"><legend class="label">実施方法</legend><div class="method-options"><button type="button" id="methodSets" class="method-option active" aria-pressed="true">セットあり</button><button type="button" id="methodOnce" class="method-option" aria-pressed="false">1回のみ</button></div></fieldset>
+      <div class="field-block"><label class="label" id="timeLabel">1set・1人の時間</label><div class="time-input-row" role="group" aria-labelledby="timeLabel"><label class="time-input"><input class="num-input" id="menuMinutes" type="number" min="0" step="1" inputmode="numeric" placeholder="0" aria-label="分" aria-describedby="menuMinutesError"><span>分</span></label><label class="time-input"><input class="num-input" id="menuSecondsPart" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0" aria-label="秒" aria-describedby="menuSecondsError"><span>秒</span></label></div><div class="time-errors"><p class="field-error" id="menuMinutesError"></p><p class="field-error" id="menuSecondsError"></p></div></div>
+    </div>
+    <div class="bottom flow-actions"><button class="secondary" data-go="list">戻る</button><button class="primary" id="saveMenuBtn">追加する</button></div>
+  </section>
+
+  <section class="screen" id="screen-categories">
+    <div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">分類一覧</h1><button class="top-action" id="categoryEditToggle" aria-pressed="false">編集</button></div>
+    <div class="scroll-area" id="categoryList"></div><div class="sr-only" id="categoryReorderStatus" aria-live="polite"></div>
+  </section>
+
+  <section class="screen" id="screen-list">
+    <div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">メニュー一覧</h1><button class="top-action" id="menuAddTopBtn">追加</button></div>
+    <div class="list-title-row"><div><span class="label section-label">分類</span><span class="list-count" id="listCount"></span></div><button class="mini-btn reorder-toggle" id="reorderToggle" aria-pressed="false">編集</button></div>
+    <div class="chips category-box" id="categoryChips" role="tablist" aria-label="分類"></div><p class="helper-text" id="reorderHint" hidden>持ち手をドラッグ。同じ分類内で並び替えできます。</p><div class="scroll-area" id="menuList"></div><div class="sr-only" id="reorderStatus" aria-live="polite"></div>
+  </section>
+
+  <section class="screen" id="screen-history">
+    <div class="top"><button class="back" data-go="home" aria-label="ホームに戻る">‹</button><h1 class="title">練習メニュー履歴</h1><button class="top-action" id="historyEditToggle" aria-pressed="false">編集</button></div>
+    <div class="scroll-area history-list" id="historyList"></div>
+  </section>
 </div>
-<div class="modal-backdrop" id="confirmModal"><div class="modal"><h3>消去しますか？</h3><p id="confirmText"></p><div class="modal-actions"><button class="secondary" id="cancelDelete">キャンセル</button><button class="danger-button" id="confirmDelete">消去</button></div></div></div>
-<div class="preview-wrap" id="previewWrap" role="dialog" aria-modal="true" aria-label="出力画像の確認"><div class="preview-card"><img id="previewImg" alt="画像プレビュー"><div class="preview-actions"><button class="secondary" id="closePreview">閉じる</button><button class="secondary" id="addHistoryBtn">履歴に追加</button><button class="primary" id="downloadImage">保存</button></div></div></div>
-<div class="preview-wrap" id="historyPreviewWrap" role="dialog" aria-modal="true" aria-labelledby="historyPreviewTitle"><div class="preview-card history-preview-card"><div class="preview-heading"><div><span>保存したメニュー表</span><h2 id="historyPreviewTitle">メニュー表</h2></div><button class="preview-close" id="closeHistoryPreview" type="button" aria-label="プレビューを閉じる">×</button></div><img id="historyPreviewImg" alt="履歴画像のプレビュー"><div class="preview-actions"><button class="secondary" id="closeHistoryPreviewBottom">閉じる</button><button class="primary" id="downloadHistoryPreview">写真を保存</button></div></div></div>
-<script src="./app.js?v=20260810-1"></script>
+
+<div class="toast" id="appToast" role="status" aria-live="polite"><span id="toastMessage"></span><button id="toastUndo" type="button" hidden>元に戻す</button></div>
+
+<div class="modal-backdrop" id="confirmModal" role="dialog" aria-modal="true" aria-labelledby="confirmTitle"><div class="modal"><h3 id="confirmTitle">この履歴画像を削除しますか？</h3><p id="confirmText"></p><div class="modal-actions"><button class="secondary" id="cancelDelete">キャンセル</button><button class="danger-button" id="confirmDelete">削除</button></div></div></div>
+
+<div class="preview-wrap" id="previewWrap" role="dialog" aria-modal="true" aria-labelledby="previewTitle"><div class="preview-card"><div class="preview-heading"><h2 id="previewTitle">画像プレビュー</h2><button class="preview-close" id="closePreviewTop" type="button" aria-label="プレビューを閉じる">×</button></div><img id="previewImg" alt="生成したメニュー表"><label class="history-option"><input id="addHistoryOnSave" type="checkbox" checked><span>履歴にも追加する</span></label><div class="preview-actions"><button class="primary" id="downloadImage">画像を保存</button><button class="secondary" id="closePreview">閉じる</button></div></div></div>
+
+<div class="preview-wrap" id="historyPreviewWrap" role="dialog" aria-modal="true" aria-labelledby="historyPreviewTitle"><div class="preview-card history-preview-card"><div class="preview-heading"><div><span>保存したメニュー表</span><h2 id="historyPreviewTitle">メニュー表</h2></div><button class="preview-close" id="closeHistoryPreview" type="button" aria-label="プレビューを閉じる">×</button></div><img id="historyPreviewImg" alt="履歴画像のプレビュー"><div class="preview-actions"><button class="primary" id="downloadHistoryPreview">写真を保存</button><button class="secondary" id="closeHistoryPreviewBottom">閉じる</button></div></div></div>
+
+<script src="./app.js?v=20260905-1"></script>
 </body>
 </html>
