@@ -13,7 +13,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32-v3.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon-v3.png" />
-  <link rel="stylesheet" href="./styles.css?v=20260905-1" />
+  <link rel="stylesheet" href="./styles.css?v=20260909-1" />
 </head>
 <body>
 <div class="app">
@@ -45,7 +45,7 @@
     <div class="progress-steps" aria-label="作成の進行状況"><span>1 メニュー</span><span class="active" aria-current="step">2 セット</span><span>3 出力</span></div>
     <div class="sub-title">メニュー表名：<strong id="setSheetTitle">メニュー表</strong></div>
     <div class="flow-scroll sets-scroll">
-      <div class="people-box"><div class="people-title">比較する人数を2つまで選択</div><div class="chips" id="peopleSelect"></div></div>
+      <div class="people-box"><div class="people-options"><div class="people-title">比較する人数を2つまで選択</div><div class="chips" id="peopleSelect"></div></div><label class="time-display-option"><span>時間表示</span><input type="checkbox" id="showImageTime" role="switch"><span class="time-display-track" aria-hidden="true"></span></label></div>
       <div class="table-card"><table class="set-table"><thead id="setHead"></thead><tbody id="setRows"></tbody></table></div>
       <div class="summary"><div class="summary-card"><div class="summary-grid"><div>合計人set</div><div class="set-total-line" id="setTotalsLine"></div><div>所要時間</div><div><span class="big" id="totalTime">0分 0秒</span></div></div><div class="note" id="totalNote"></div></div><div class="status ok" id="statusBox" aria-live="polite">出力可</div></div>
     </div>
@@ -88,6 +88,6 @@
 
 <div class="preview-wrap" id="historyPreviewWrap" role="dialog" aria-modal="true" aria-labelledby="historyPreviewTitle"><div class="preview-card history-preview-card"><div class="preview-heading"><div><span>保存したメニュー表</span><h2 id="historyPreviewTitle">メニュー表</h2></div><button class="preview-close" id="closeHistoryPreview" type="button" aria-label="プレビューを閉じる">×</button></div><img id="historyPreviewImg" alt="履歴画像のプレビュー"><div class="preview-actions"><button class="primary" id="downloadHistoryPreview">写真を保存</button><button class="secondary" id="closeHistoryPreviewBottom">閉じる</button></div></div></div>
 
-<script src="./app.js?v=20260905-1"></script>
+<script src="./app.js?v=20260909-1"></script>
 </body>
 </html>

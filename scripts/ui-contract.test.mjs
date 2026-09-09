@@ -55,7 +55,29 @@ test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(app,/duration:5000,undo:/);
   assert.match(app,/addHistoryOnSave/);
   assert.match(app,/URL\.revokeObjectURL/);
-  assert.match(worker,/training-menu-pwa-v20260905-ui-spec-1/);
+  assert.match(worker,/training-menu-pwa-v20260909-time-display-1/);
   assert.match(worker,/skipWaiting\(\)/);
   assert.match(worker,/clients\.claim\(\)/);
+});
+
+test('image time toggle and solo summary render the requested text',()=>{
+  const exportSource=app.slice(app.indexOf('function exportImage()'),app.indexOf('function fitText'));
+  for(const enabled of [false,true]){
+    const labels=[];
+    const elements=new Map();
+    const context={
+      selectedPeople:[1],setPlan:[{menuId:'m',sets:{1:2}}],currentSheetTitle:'テスト',
+      calcTotals:()=>({byPerson:{1:{rawSets:2,peopleSets:2,seconds:180}},mismatch:false}),
+      findMenu:()=>({name:'練習',seconds:90,requiresSets:true}),
+      getSets:(row,p)=>row.sets[p],formatSeconds:s=>`${Math.floor(s/60)}分 ${s%60}秒`,
+      drawText:(_ctx,_color,_font,label)=>labels.push(label),
+      dataURLToBlob:()=>({}),
+      document:{activeElement:null,createElement:()=>({getContext:()=>new Proxy({},{get:()=>()=>{},set:()=>true}),toDataURL:()=>''})},
+      $:id=>{if(!elements.has(id))elements.set(id,{checked:enabled,classList:{add(){}},focus(){}});return elements.get(id)}
+    };
+    vm.runInNewContext(`${exportSource}\nexportImage();`,context);
+    assert.ok(labels.includes('セット数: 2 set'));
+    assert.ok(labels.includes('所要時間: 3分 0秒'));
+    assert.ok(labels.includes(enabled?'1分30秒 × 2set':'2 set'));
+  }
 });
