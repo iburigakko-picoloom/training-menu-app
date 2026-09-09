@@ -64,7 +64,7 @@ test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(app,/duration:5000,undo:/);
   assert.match(app,/addHistoryOnSave/);
   assert.match(app,/URL\.revokeObjectURL/);
-  assert.match(worker,/training-menu-pwa-v20260909-totals-9/);
+  assert.match(worker,/training-menu-pwa-v20260909-save-10/);
   assert.match(worker,/skipWaiting\(\)/);
   assert.match(worker,/clients\.claim\(\)/);
 });
@@ -83,10 +83,10 @@ test('category changes preserve unsaved menu fields',()=>{
 });
 
 test('editing saves the selected category and follows it in the list',()=>{
-  const source=app.slice(app.indexOf('function saveMenu('),app.indexOf('function renderCategoryListScreen('));
+  const source=app.slice(app.indexOf('function saveMenu('),app.indexOf('async function finishMenuSave('));
   const menu={id:'m',categoryId:'old'};
-  const fields={addCategoryBtn:{value:'new'},menuName:{value:'練習'},menuMinutes:{value:'2'},menuSecondsPart:{value:'30'}};
-  const context={state:{categories:[{id:'old'},{id:'new'}],menus:[menu]},editingMenuId:'m',listCategory:'old',addCategoryId:'old',$:id=>fields[id],clearFieldErrors(){},fixedMode:()=>false,findMenu:()=>menu,mutateAndSave:fn=>{fn();return true},resetAddForm(){},showScreen(){},showToast(){}};
+  const fields={saveMenuBtn:{disabled:false},addCategoryBtn:{value:'new'},menuName:{value:'練習'},menuMinutes:{value:'2'},menuSecondsPart:{value:'30'}};
+  const context={state:{categories:[{id:'old'},{id:'new'}],menus:[menu]},editingMenuId:'m',listCategory:'old',addCategoryId:'old',$:id=>fields[id],clearFieldErrors(){},fixedMode:()=>false,findMenu:()=>menu,mutateAndSave:fn=>{fn();return true},finishMenuSave(){},resetAddForm(){},showScreen(){},showToast(){}};
   vm.runInNewContext(`${source}\nsaveMenu();`,context);
   assert.equal(menu.categoryId,'new');
   assert.equal(menu.seconds,150);

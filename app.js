@@ -283,6 +283,7 @@ function renderAddScreen(initialize=true){
   updateTimeLabel();
 }
 function saveMenu(){
+  if($('saveMenuBtn').disabled)return;
   addCategoryId=$('addCategoryBtn').value;
   const name=$('menuName').value.trim();
   const minuteValue=$('menuMinutes').value;
@@ -308,9 +309,31 @@ function saveMenu(){
   if(!saved){showSaveError();return}
   const message=editingMenu?'メニューを保存しました':'メニューを追加しました';
   if(listCategory!=='all')listCategory=data.categoryId;
-  resetAddForm();
-  showScreen('list');
-  showToast(message);
+  finishMenuSave(message,!!editingMenu);
+}
+async function finishMenuSave(message,isEditing){
+  const button=$('saveMenuBtn'),screen=$('screen-add');
+  button.disabled=true;
+  button.innerHTML='<span class="save-check" aria-hidden="true">✓</span><span>'+(isEditing?'保存完了':'登録完了')+'</span>';
+  button.classList.add('save-complete');
+  button.setAttribute('aria-live','polite');
+  screen.inert=true;
+  try{
+    await new Promise(resolve=>setTimeout(resolve,550));
+    if(!window.matchMedia('(prefers-reduced-motion: reduce)').matches&&screen.animate){
+      await screen.animate([{opacity:1,transform:'translateY(0)'},{opacity:0,transform:'translateY(-6px)'}],{duration:180,easing:'ease-in',fill:'forwards'}).finished;
+    }
+  }finally{
+    screen.getAnimations().forEach(animation=>animation.cancel());
+    screen.inert=false;
+    button.disabled=false;
+    button.classList.remove('save-complete');
+    button.removeAttribute('aria-live');
+    resetAddForm();
+    showScreen('list');
+    $('menuAddTopBtn').focus({preventScroll:true});
+    showToast(message);
+  }
 }
 function renderCategoryListScreen(){
   const list=$('categoryList');
