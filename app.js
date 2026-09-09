@@ -120,32 +120,30 @@ function addChip(el,text,active,onClick){
   el.appendChild(button);
 }
 function renderCategoryPanel(){
-  const panel=$('addCategoryPanel');
-  panel.innerHTML='';
+  const select=$('addCategoryBtn');
+  select.innerHTML='<option value="" disabled>分類を選択</option>';
   state.categories.forEach(category=>{
-    const button=document.createElement('button');
-    button.className='drop-item'+(addCategoryId===category.id?' active':'');
-    button.innerHTML=`<span>${escapeHTML(category.name)}</span>${addCategoryId===category.id?'<span>✓</span>':''}`;
-    button.addEventListener('click',()=>{
-      addCategoryId=category.id;
-      closeDropdowns();
-      renderAddScreen();
-    });
-    panel.appendChild(button);
+    const option=document.createElement('option');
+    option.value=category.id;
+    option.textContent=category.name;
+    select.appendChild(option);
   });
-  const addButton=document.createElement('button');
-  addButton.className='drop-item add-new';
-  addButton.textContent='＋新規追加';
-  addButton.addEventListener('click',()=>{
+  const add=document.createElement('option');
+  add.value='__new__';
+  add.textContent='＋新規追加';
+  select.appendChild(add);
+  select.value=addCategoryId;
+}
+function selectAddCategory(){
+  const select=$('addCategoryBtn');
+  if(select.value==='__new__'){
     const name=prompt('新しい分類名を入力してください');
-    if(!name?.trim())return;
+    if(!name?.trim()){select.value=addCategoryId;return}
     const category={id:uid('cat'),name:name.trim()};
-    if(!mutateAndSave(()=>state.categories.push(category))){showSaveError();return}
+    if(!mutateAndSave(()=>state.categories.push(category))){select.value=addCategoryId;showSaveError();return}
     addCategoryId=category.id;
-    closeDropdowns();
-    renderAddScreen();
-  });
-  panel.appendChild(addButton);
+  }else addCategoryId=select.value;
+  renderAddScreen(false);
 }
 function renderCreateScreen(){
   renderCategoryChips($('createCategoryChips'),createCategory,id=>{createCategory=id;renderCreateScreen()},true);
@@ -267,11 +265,11 @@ function resetAddForm(){
   clearFieldErrors();
   updateTimeLabel();
 }
-function renderAddScreen(){
+function renderAddScreen(initialize=true){
   const editing=editingMenuId?findMenu(editingMenuId):null;
   $('addTitle').textContent=editing?'メニュー編集':'メニュー追加';
   $('saveMenuBtn').textContent=editing?'保存する':'追加する';
-  if(editing){
+  if(editing&&initialize){
     const totalSeconds=Math.max(0,Math.round(Number(editing.seconds)||0));
     $('menuName').value=editing.name;
     $('menuMinutes').value=Math.floor(totalSeconds/60);
@@ -279,7 +277,6 @@ function renderAddScreen(){
     addCategoryId=editing.categoryId;
     setFixedSwitch(!editing.requiresSets);
   }
-  $('addCategoryText').textContent=categoryName(addCategoryId)||'分類を選択';
   renderCategoryPanel();
   clearFieldErrors();
   updateTimeLabel();
@@ -624,7 +621,7 @@ async function downloadImage(){
   button.disabled=false;
 }
 document.querySelectorAll('[data-go]').forEach(button=>button.addEventListener('click',()=>{if(button.dataset.go==='add')resetAddForm();showScreen(button.dataset.go)}));
-$('addCategoryBtn').addEventListener('click',event=>{event.stopPropagation();$('addCategoryPanel').classList.toggle('open')});
+$('addCategoryBtn').addEventListener('change',selectAddCategory);
 document.addEventListener('click',event=>{if(!event.target.closest('.field-block'))closeDropdowns()});
 $('startSetBtn').addEventListener('click',startSetSelection);
 $('methodSets').addEventListener('click',()=>{setFixedSwitch(false);updateTimeLabel()});

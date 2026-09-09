@@ -55,9 +55,22 @@ test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(app,/duration:5000,undo:/);
   assert.match(app,/addHistoryOnSave/);
   assert.match(app,/URL\.revokeObjectURL/);
-  assert.match(worker,/training-menu-pwa-v20260909-time-display-1/);
+  assert.match(worker,/training-menu-pwa-v20260909-category-2/);
   assert.match(worker,/skipWaiting\(\)/);
   assert.match(worker,/clients\.claim\(\)/);
+});
+
+test('category changes preserve unsaved menu fields',()=>{
+  const source=app.slice(app.indexOf('function renderAddScreen('),app.indexOf('function saveMenu('));
+  for(const editingMenuId of [null,'existing']){
+    const fields={menuName:{value:'入力中'},menuMinutes:{value:'7'},menuSecondsPart:{value:'30'},addTitle:{},saveMenuBtn:{}};
+    const context={editingMenuId,addCategoryId:'new-category',findMenu:()=>({name:'保存済み',seconds:60,categoryId:'old-category',requiresSets:true}),$:id=>fields[id],renderCategoryPanel(){},clearFieldErrors(){},updateTimeLabel(){},setFixedSwitch(){}};
+    vm.runInNewContext(`${source}\nrenderAddScreen(false);`,context);
+    assert.equal(context.addCategoryId,'new-category');
+    assert.equal(fields.menuName.value,'入力中');
+    assert.equal(fields.menuMinutes.value,'7');
+    assert.equal(fields.menuSecondsPart.value,'30');
+  }
 });
 
 test('image time toggle and solo summary render the requested text',()=>{

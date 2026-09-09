@@ -13,7 +13,7 @@
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32-v3.png" />
   <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon-v3.png" />
-  <link rel="stylesheet" href="./styles.css?v=20260909-1" />
+  <link rel="stylesheet" href="./styles.css?v=20260909-2" />
 </head>
 <body>
 <div class="app">
@@ -56,7 +56,7 @@
     <div class="top"><button class="back" data-go="list" aria-label="メニュー一覧に戻る">‹</button><h1 class="title" id="addTitle">メニュー追加</h1><span class="top-spacer"></span></div>
     <div class="form-scroll">
       <div class="field-block"><label class="label" for="menuName">名前</label><input class="text-input" id="menuName" placeholder="例：基礎練習" aria-describedby="menuNameError"><p class="field-error" id="menuNameError"></p></div>
-      <div class="field-block"><label class="label" for="addCategoryBtn">分類</label><button class="select-button" id="addCategoryBtn" aria-haspopup="listbox" aria-describedby="menuCategoryError"><b id="addCategoryText">分類を選択</b><span aria-hidden="true">⌄</span></button><div class="drop-panel" id="addCategoryPanel" role="listbox"></div><p class="field-error" id="menuCategoryError"></p></div>
+      <div class="field-block"><label class="label" for="addCategoryBtn">分類</label><select class="select-button" id="addCategoryBtn" aria-describedby="menuCategoryError"></select><p class="field-error" id="menuCategoryError"></p></div>
       <fieldset class="field-block method-field"><legend class="label">実施方法</legend><div class="method-options"><button type="button" id="methodSets" class="method-option active" aria-pressed="true">セットあり</button><button type="button" id="methodOnce" class="method-option" aria-pressed="false">1回のみ</button></div></fieldset>
       <div class="field-block"><label class="label" id="timeLabel">1set・1人の時間</label><div class="time-input-row" role="group" aria-labelledby="timeLabel"><label class="time-input"><input class="num-input" id="menuMinutes" type="number" min="0" step="1" inputmode="numeric" placeholder="0" aria-label="分" aria-describedby="menuMinutesError"><span>分</span></label><label class="time-input"><input class="num-input" id="menuSecondsPart" type="number" min="0" max="59" step="1" inputmode="numeric" placeholder="0" aria-label="秒" aria-describedby="menuSecondsError"><span>秒</span></label></div><div class="time-errors"><p class="field-error" id="menuMinutesError"></p><p class="field-error" id="menuSecondsError"></p></div></div>
     </div>
@@ -88,6 +88,6 @@
 
 <div class="preview-wrap" id="historyPreviewWrap" role="dialog" aria-modal="true" aria-labelledby="historyPreviewTitle"><div class="preview-card history-preview-card"><div class="preview-heading"><div><span>保存したメニュー表</span><h2 id="historyPreviewTitle">メニュー表</h2></div><button class="preview-close" id="closeHistoryPreview" type="button" aria-label="プレビューを閉じる">×</button></div><img id="historyPreviewImg" alt="履歴画像のプレビュー"><div class="preview-actions"><button class="primary" id="downloadHistoryPreview">写真を保存</button><button class="secondary" id="closeHistoryPreviewBottom">閉じる</button></div></div></div>
 
-<script src="./app.js?v=20260909-1"></script>
+<script src="./app.js?v=20260909-2"></script>
 </body>
 </html>
