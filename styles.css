@@ -1597,6 +1597,33 @@ body {
   font-weight: 400;
 }
 
+/* Keep the native picker, but match the other form fields on mobile. */
+select.select-button {
+  display: block;
+  appearance: none;
+  -webkit-appearance: none;
+  min-width: 0;
+  max-width: 100%;
+  height: 48px;
+  padding: 0 42px 0 14px;
+  color: var(--text);
+  font-family: inherit;
+  line-height: normal;
+  text-align: left;
+  text-overflow: ellipsis;
+  background-color: var(--surface);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3E%3Cpath d='m4 6 4 4 4-4' fill='none' stroke='%2368756d' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 16px;
+}
+
+select.select-button:focus-visible {
+  outline: 3px solid rgba(23, 130, 59, 0.22);
+  outline-offset: 2px;
+  border-color: var(--green);
+}
+
 .category-box {
   min-height: 50px;
   padding: 5px;
