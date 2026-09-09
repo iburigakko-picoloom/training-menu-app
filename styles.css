@@ -1809,6 +1809,7 @@ select.select-button:focus-visible {
 }
 
 .once-pill { color: var(--text); background: transparent; font-size: 13px; font-weight: 500; }
+.set-table td.once-time-cell { text-align: center; }
 
 .summary-grid .big {
   font-size: 13px;
