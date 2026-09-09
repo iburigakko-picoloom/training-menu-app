@@ -1798,13 +1798,19 @@ select.select-button:focus-visible {
 }
 
 .summary-grid .big {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   line-height: 1.4;
 }
 
 #totalTime > span { display: inline-block; }
-#totalNote:empty { display: none; }
+#totalNote { display: none !important; }
+#totalTime { white-space: nowrap; }
+.summary-grid { grid-template-columns: 68px minmax(0, 1fr); column-gap: 6px; }
+@media (max-width: 340px) {
+  .summary-grid { grid-template-columns: 58px minmax(0, 1fr); column-gap: 4px; }
+  .summary-grid .big { font-size: 11px; }
+}
 
 .summary-grid,
 .set-total-line,
