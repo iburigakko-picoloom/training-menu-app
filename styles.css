@@ -1804,6 +1804,8 @@ select.select-button:focus-visible {
   padding: 8px 10px;
 }
 
+.once-pill { color: var(--text); background: transparent; font-size: 13px; font-weight: 500; }
+
 .summary-grid .big {
   font-size: 12px;
   font-weight: 600;
