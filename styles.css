@@ -1807,7 +1807,7 @@ select.select-button:focus-visible {
 .once-pill { color: var(--text); background: transparent; font-size: 13px; font-weight: 500; }
 
 .summary-grid .big {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   line-height: 1.4;
 }
@@ -1818,7 +1818,7 @@ select.select-button:focus-visible {
 .summary-grid { grid-template-columns: 68px minmax(0, 1fr); column-gap: 6px; }
 @media (max-width: 340px) {
   .summary-grid { grid-template-columns: 58px minmax(0, 1fr); column-gap: 4px; }
-  .summary-grid .big { font-size: 11px; }
+  .summary-grid .big { font-size: 12px; }
 }
 
 .summary-grid,

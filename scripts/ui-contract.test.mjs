@@ -47,6 +47,15 @@ test('calculates set-based and one-time menu durations correctly',()=>{
   assert.equal(context.result.mismatch,true);
 });
 
+test('matching total person-sets suppresses warning despite different menu allocations',()=>{
+  const source=app.slice(app.indexOf('function calculateTotals'),app.indexOf('function calcTotals'));
+  const context={};
+  vm.runInNewContext(`function getSets(row,p){return row.sets[p]}\n${source}\nresult=calculateTotals([4,5],[{menuId:'a',sets:{4:3,5:1}},{menuId:'b',sets:{4:2,5:3}}],[{id:'a',seconds:60,requiresSets:true},{id:'b',seconds:120,requiresSets:true}]);`,context);
+  assert.equal(context.result.byPerson[4].peopleSets,20);
+  assert.equal(context.result.byPerson[5].peopleSets,20);
+  assert.equal(context.result.mismatch,false);
+});
+
 test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(css,/max-width:\s*480px/);
   assert.match(css,/max-width:\s*340px/);
@@ -55,7 +64,7 @@ test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(app,/duration:5000,undo:/);
   assert.match(app,/addHistoryOnSave/);
   assert.match(app,/URL\.revokeObjectURL/);
-  assert.match(worker,/training-menu-pwa-v20260909-layout-8/);
+  assert.match(worker,/training-menu-pwa-v20260909-totals-9/);
   assert.match(worker,/skipWaiting\(\)/);
   assert.match(worker,/clients\.claim\(\)/);
 });

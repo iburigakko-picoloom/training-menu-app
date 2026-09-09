@@ -213,21 +213,19 @@ function renderSetScreen(){
   $('setTotalsLine').innerHTML=selectedPeople.map(p=>`<span>${p}人：<b>${t.byPerson[p].peopleSets}</b> 人set</span>`).join('');
   $('totalTime').innerHTML=selectedPeople.map(p=>`<span>${p}人：<b>${formatSeconds(t.byPerson[p].seconds)}</b></span>`).join(' / ');
   const box=$('statusBox');
-  if(t.mismatch){$('totalNote').textContent='';box.className='status ng';box.textContent='注意：メニューごとの練習量が一致していません。'}else{$('totalNote').textContent='';box.className='status ok';box.textContent='出力可'}
+  if(t.mismatch){$('totalNote').textContent='';box.className='status ng';box.textContent='注意：人数ごとの合計人setが一致していません。'}else{$('totalNote').textContent='';box.className='status ok';box.textContent='出力可'}
 }
 function getSets(row,p){return Number(row.sets?.[p]??0)}
 function stepperHTML(index,person,value){return `<span class="stepper"><button data-step="-1" data-index="${index}" data-person="${person}">−</button><span>${value} set</span><button data-step="1" data-index="${index}" data-person="${person}">＋</button></span>`}
 function calculateTotals(people,plan,menus){
   if(!people.length)return{byPerson:{},mismatch:false,noPeople:true};
   const menuById=new Map(menus.map(menu=>[menu.id,menu]));
-  const byPerson={},mismatchMenus=[];
+  const byPerson={};
   people.forEach(person=>byPerson[person]={rawSets:0,peopleSets:0,seconds:0});
   plan.forEach(row=>{
     const menu=menuById.get(row.menuId);
     if(!menu)return;
     if(menu.requiresSets){
-      const peopleSets=people.map(person=>getSets(row,person)*person);
-      if(peopleSets.some(value=>value!==peopleSets[0]))mismatchMenus.push(menu.name);
       people.forEach(person=>{
         const sets=getSets(row,person);
         byPerson[person].rawSets+=sets;
@@ -238,7 +236,8 @@ function calculateTotals(people,plan,menus){
       people.forEach(person=>byPerson[person].seconds+=menu.seconds);
     }
   });
-  return{byPerson,mismatch:mismatchMenus.length>0,mismatchMenus,noPeople:false};
+  const mismatch=people.some(person=>byPerson[person].peopleSets!==byPerson[people[0]].peopleSets);
+  return{byPerson,mismatch,noPeople:false};
 }
 function calcTotals(){return calculateTotals(selectedPeople,setPlan,state.menus)}
 function setFixedSwitch(on){
@@ -611,7 +610,7 @@ function deleteMenu(id){
     pendingUndo=null;renderListScreen();renderCreateScreen();showToast('メニューを元に戻しました');
   }});
 }
-function exportImage(){const t=calcTotals();if(t.noPeople)return;const rows=setPlan.map(r=>({row:r,menu:findMenu(r.menuId)})).filter(x=>x.menu),w=1080,rowH=72,tableY=t.mismatch?350:305,h=Math.max(860,tableY+rows.length*rowH+100),c=document.createElement('canvas');c.width=w;c.height=h;const showTime=$('showImageTime').checked,solo=selectedPeople.length===1&&selectedPeople[0]===1;const ctx=c.getContext('2d'),peopleSummary=selectedPeople.map(p=>`${p}人：${t.byPerson[p].peopleSets}人set`).join('　'),timeSummary=selectedPeople.map(p=>`${p}人：${formatSeconds(t.byPerson[p].seconds)}`).join('　');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);drawText(ctx,'#17823b','800 34px sans-serif','練習メニュー表',60,70,960);drawText(ctx,'#16201a','900 54px sans-serif',currentSheetTitle,60,145,960);drawText(ctx,'#6a756f','800 24px sans-serif',solo?`セット数: ${t.byPerson[1].rawSets} set`:`合計人set　${peopleSummary}`,60,195,960);drawText(ctx,'#6a756f','800 24px sans-serif',solo?`所要時間: ${formatSeconds(t.byPerson[1].seconds)}`:`所要時間　${timeSummary}`,60,235,960);if(t.mismatch)drawText(ctx,'#d94141','900 24px sans-serif','注意：人数パターンごとに、メニュー別の人setが一致していません。',60,285,960);let y=tableY;drawText(ctx,'#6a756f','800 24px sans-serif','No.',60,y);drawText(ctx,'#6a756f','800 24px sans-serif','メニュー',145,y);const colXs=selectedPeople.length===1?[showTime?720:820]:showTime?[550,790]:[720,880];selectedPeople.forEach((p,idx)=>drawText(ctx,'#6a756f','800 24px sans-serif',`${p}人`,colXs[idx],y,120));y+=26;ctx.strokeStyle='#dce6df';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(60,y);ctx.lineTo(1020,y);ctx.stroke();y+=48;rows.forEach((x,i)=>{const{row,menu}=x;ctx.fillStyle=i%2?'#f7faf8':'#fff';ctx.fillRect(50,y-36,980,rowH);drawText(ctx,'#17823b','900 28px sans-serif',String(i+1),70,y+10,50);drawText(ctx,'#16201a','900 30px sans-serif',menu.name,145,y+10,colXs[0]-165);if(menu.requiresSets)selectedPeople.forEach((p,idx)=>drawText(ctx,'#16201a','900 30px sans-serif',showTime?`${formatCompactSeconds(menu.seconds).replace(' ','')} × ${getSets(row,p)}set`:`${getSets(row,p)} set`,colXs[idx],y+10,showTime?(selectedPeople.length===1?300:225):120));else drawText(ctx,'#16201a','900 30px sans-serif',`${formatCompactSeconds(menu.seconds)}`,colXs[0],y+10,selectedPeople.length===1?180:250);y+=rowH});lastImageDataUrl=c.toDataURL('image/png');lastHistoryDataUrl=c.toDataURL('image/jpeg',0.82);lastHistoryBlob=dataURLToBlob(lastHistoryDataUrl);lastHistoryType='image/jpeg';lastImageTitle=currentSheetTitle;lastPreviewHistorySaved=false;$('addHistoryOnSave').checked=true;$('previewImg').src=lastImageDataUrl;previewReturnFocus=document.activeElement;$('previewWrap').classList.add('open');$('closePreviewTop').focus()}
+function exportImage(){const t=calcTotals();if(t.noPeople)return;const rows=setPlan.map(r=>({row:r,menu:findMenu(r.menuId)})).filter(x=>x.menu),w=1080,rowH=72,tableY=t.mismatch?350:305,h=Math.max(860,tableY+rows.length*rowH+100),c=document.createElement('canvas');c.width=w;c.height=h;const showTime=$('showImageTime').checked,solo=selectedPeople.length===1&&selectedPeople[0]===1;const ctx=c.getContext('2d'),peopleSummary=selectedPeople.map(p=>`${p}人：${t.byPerson[p].peopleSets}人set`).join('　'),timeSummary=selectedPeople.map(p=>`${p}人：${formatSeconds(t.byPerson[p].seconds)}`).join('　');ctx.fillStyle='#fff';ctx.fillRect(0,0,w,h);drawText(ctx,'#17823b','800 34px sans-serif','練習メニュー表',60,70,960);drawText(ctx,'#16201a','900 54px sans-serif',currentSheetTitle,60,145,960);drawText(ctx,'#6a756f','800 24px sans-serif',solo?`セット数: ${t.byPerson[1].rawSets} set`:`合計人set　${peopleSummary}`,60,195,960);drawText(ctx,'#6a756f','800 24px sans-serif',solo?`所要時間: ${formatSeconds(t.byPerson[1].seconds)}`:`所要時間　${timeSummary}`,60,235,960);if(t.mismatch)drawText(ctx,'#d94141','900 24px sans-serif','注意：人数ごとの合計人setが一致していません。',60,285,960);let y=tableY;drawText(ctx,'#6a756f','800 24px sans-serif','No.',60,y);drawText(ctx,'#6a756f','800 24px sans-serif','メニュー',145,y);const colXs=selectedPeople.length===1?[showTime?720:820]:showTime?[550,790]:[720,880];selectedPeople.forEach((p,idx)=>drawText(ctx,'#6a756f','800 24px sans-serif',`${p}人`,colXs[idx],y,120));y+=26;ctx.strokeStyle='#dce6df';ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(60,y);ctx.lineTo(1020,y);ctx.stroke();y+=48;rows.forEach((x,i)=>{const{row,menu}=x;ctx.fillStyle=i%2?'#f7faf8':'#fff';ctx.fillRect(50,y-36,980,rowH);drawText(ctx,'#17823b','900 28px sans-serif',String(i+1),70,y+10,50);drawText(ctx,'#16201a','900 30px sans-serif',menu.name,145,y+10,colXs[0]-165);if(menu.requiresSets)selectedPeople.forEach((p,idx)=>drawText(ctx,'#16201a','900 30px sans-serif',showTime?`${formatCompactSeconds(menu.seconds).replace(' ','')} × ${getSets(row,p)}set`:`${getSets(row,p)} set`,colXs[idx],y+10,showTime?(selectedPeople.length===1?300:225):120));else drawText(ctx,'#16201a','900 30px sans-serif',`${formatCompactSeconds(menu.seconds)}`,colXs[0],y+10,selectedPeople.length===1?180:250);y+=rowH});lastImageDataUrl=c.toDataURL('image/png');lastHistoryDataUrl=c.toDataURL('image/jpeg',0.82);lastHistoryBlob=dataURLToBlob(lastHistoryDataUrl);lastHistoryType='image/jpeg';lastImageTitle=currentSheetTitle;lastPreviewHistorySaved=false;$('addHistoryOnSave').checked=true;$('previewImg').src=lastImageDataUrl;previewReturnFocus=document.activeElement;$('previewWrap').classList.add('open');$('closePreviewTop').focus()}
 function fitText(ctx,text,maxWidth){const value=String(text);if(!maxWidth||ctx.measureText(value).width<=maxWidth)return value;let end=value.length;while(end>0&&ctx.measureText(`${value.slice(0,end)}…`).width>maxWidth)end-=1;return `${value.slice(0,end)}…`}function drawText(ctx,color,font,text,x,y,maxWidth){ctx.fillStyle=color;ctx.font=font;ctx.fillText(fitText(ctx,text,maxWidth),x,y)}
 function closePreview(){const wrap=$('previewWrap'),wasOpen=wrap.classList.contains('open');wrap.classList.remove('open');if(wasOpen&&previewReturnFocus?.isConnected)previewReturnFocus.focus();previewReturnFocus=null}
 async function downloadImage(){
