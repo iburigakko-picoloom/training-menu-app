@@ -1737,7 +1737,8 @@ select.select-button:focus-visible {
 
 .sets-scroll {
   display: grid;
-  align-content: start;
+  grid-template-rows: auto minmax(130px, 1fr) auto;
+  align-content: stretch;
   gap: 10px;
 }
 
@@ -1793,8 +1794,17 @@ select.select-button:focus-visible {
 }
 
 .summary-card {
-  padding: 11px 12px;
+  padding: 8px 10px;
 }
+
+.summary-grid .big {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+#totalTime > span { display: inline-block; }
+#totalNote:empty { display: none; }
 
 .summary-grid,
 .set-total-line,

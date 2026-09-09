@@ -55,7 +55,7 @@ test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(app,/duration:5000,undo:/);
   assert.match(app,/addHistoryOnSave/);
   assert.match(app,/URL\.revokeObjectURL/);
-  assert.match(worker,/training-menu-pwa-v20260909-category-4/);
+  assert.match(worker,/training-menu-pwa-v20260909-layout-5/);
   assert.match(worker,/skipWaiting\(\)/);
   assert.match(worker,/clients\.claim\(\)/);
 });
@@ -102,7 +102,7 @@ test('image time toggle and solo summary render the requested text',()=>{
       selectedPeople:[1],setPlan:[{menuId:'m',sets:{1:2}}],currentSheetTitle:'テスト',
       calcTotals:()=>({byPerson:{1:{rawSets:2,peopleSets:2,seconds:180}},mismatch:false}),
       findMenu:()=>({name:'練習',seconds:90,requiresSets:true}),
-      getSets:(row,p)=>row.sets[p],formatSeconds:s=>`${Math.floor(s/60)}分 ${s%60}秒`,
+      formatCompactSeconds:s=>s%60?`${Math.floor(s/60)}分 ${s%60}秒`:`${Math.floor(s/60)}分`,getSets:(row,p)=>row.sets[p],formatSeconds:s=>`${Math.floor(s/60)}分 ${s%60}秒`,
       drawText:(_ctx,_color,_font,label)=>labels.push(label),
       dataURLToBlob:()=>({}),
       document:{activeElement:null,createElement:()=>({getContext:()=>new Proxy({},{get:()=>()=>{},set:()=>true}),toDataURL:()=>''})},
