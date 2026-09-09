@@ -143,7 +143,9 @@ function selectAddCategory(){
     if(!mutateAndSave(()=>state.categories.push(category))){select.value=addCategoryId;showSaveError();return}
     addCategoryId=category.id;
   }else addCategoryId=select.value;
-  renderAddScreen(false);
+  renderCategoryPanel();
+  $('addCategoryBtn').removeAttribute('aria-invalid');
+  $('menuCategoryError').textContent='';
 }
 function renderCreateScreen(){
   renderCategoryChips($('createCategoryChips'),createCategory,id=>{createCategory=id;renderCreateScreen()},true);
@@ -255,12 +257,12 @@ function clearFieldErrors(){
   });
 }
 function setFieldError(fieldId,errorId,message){$(fieldId).setAttribute('aria-invalid','true');$(errorId).textContent=message}
-function resetAddForm(){
+function resetAddForm(categoryId=''){
   editingMenuId=null;
   $('menuName').value='';
   $('menuMinutes').value='';
   $('menuSecondsPart').value='';
-  addCategoryId=state.categories[0]?.id||'';
+  addCategoryId=state.categories.some(category=>category.id===categoryId)?categoryId:state.categories[0]?.id||'';
   setFixedSwitch(false);
   clearFieldErrors();
   updateTimeLabel();
@@ -282,6 +284,7 @@ function renderAddScreen(initialize=true){
   updateTimeLabel();
 }
 function saveMenu(){
+  addCategoryId=$('addCategoryBtn').value;
   const name=$('menuName').value.trim();
   const minuteValue=$('menuMinutes').value;
   const secondValue=$('menuSecondsPart').value;
@@ -290,7 +293,7 @@ function saveMenu(){
   clearFieldErrors();
   const errors=[];
   if(!name){setFieldError('menuName','menuNameError','名前を入力してください');errors.push('menuName')}
-  if(!addCategoryId){setFieldError('addCategoryBtn','menuCategoryError','分類を選択してください');errors.push('addCategoryBtn')}
+  if(!state.categories.some(category=>category.id===addCategoryId)){setFieldError('addCategoryBtn','menuCategoryError','分類を選択してください');errors.push('addCategoryBtn')}
   if(minuteValue!==''&&(!Number.isInteger(minutes)||minutes<0)){setFieldError('menuMinutes','menuMinutesError','分は0以上の整数で入力してください');errors.push('menuMinutes')}
   if(secondValue!==''&&(!Number.isInteger(secondsPart)||secondsPart<0||secondsPart>59)){setFieldError('menuSecondsPart','menuSecondsError','秒は0〜59の整数で入力してください');errors.push('menuSecondsPart')}
   if(errors.length){$(errors[0]).focus();return}
@@ -305,6 +308,7 @@ function saveMenu(){
   });
   if(!saved){showSaveError();return}
   const message=editingMenu?'メニューを保存しました':'メニューを追加しました';
+  if(listCategory!=='all')listCategory=data.categoryId;
   resetAddForm();
   showScreen('list');
   showToast(message);
@@ -452,7 +456,7 @@ function renderListScreen(){
   const menus=sortedMenus(state.menus.filter(menu=>listCategory==='all'||menu.categoryId===listCategory));
   $('listCount').textContent=`${menus.length}件`;
   list.innerHTML='';
-  if(!menus.length){list.innerHTML='<div class="empty"><p>メニューがありません</p><button type="button" class="secondary empty-action">メニューを追加</button></div>';list.querySelector('button').addEventListener('click',()=>{resetAddForm();showScreen('add')});return}
+  if(!menus.length){list.innerHTML='<div class="empty"><p>メニューがありません</p><button type="button" class="secondary empty-action">メニューを追加</button></div>';list.querySelector('button').addEventListener('click',()=>{resetAddForm(listCategory);showScreen('add')});return}
   menus.forEach(menu=>{
     const card=document.createElement(reorderMode?'div':'button');
     const mode=menu.requiresSets?`${formatCompactSeconds(menu.seconds)} / セットあり`:`${formatCompactSeconds(menu.seconds)} / 1回のみ`;
@@ -642,7 +646,7 @@ document.addEventListener('keydown',event=>{if(event.key!=='Escape')return;if($(
 $('reorderToggle').addEventListener('click',()=>{if(activeDrag)cleanupMenuDrag();reorderMode=!reorderMode;renderListScreen()});
 $('categoryEditToggle').addEventListener('click',()=>{if(activeCategoryDrag)cleanupCategoryDrag();categoryEditMode=!categoryEditMode;renderCategoryListScreen()});
 $('historyEditToggle').addEventListener('click',()=>{historyEditMode=!historyEditMode;renderHistoryScreen()});
-$('menuAddTopBtn').addEventListener('click',()=>{resetAddForm();showScreen('add')});
+$('menuAddTopBtn').addEventListener('click',()=>{resetAddForm(listCategory);showScreen('add')});
 if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(error=>console.warn('Service Worker の登録に失敗しました',error)));
 renderCreateScreen();
 renderAddScreen();

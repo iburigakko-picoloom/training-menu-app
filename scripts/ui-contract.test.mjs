@@ -55,7 +55,7 @@ test('keeps mobile, safe-area, history, undo, and PWA update contracts',()=>{
   assert.match(app,/duration:5000,undo:/);
   assert.match(app,/addHistoryOnSave/);
   assert.match(app,/URL\.revokeObjectURL/);
-  assert.match(worker,/training-menu-pwa-v20260909-category-2/);
+  assert.match(worker,/training-menu-pwa-v20260909-category-3/);
   assert.match(worker,/skipWaiting\(\)/);
   assert.match(worker,/clients\.claim\(\)/);
 });
@@ -71,6 +71,26 @@ test('category changes preserve unsaved menu fields',()=>{
     assert.equal(fields.menuMinutes.value,'7');
     assert.equal(fields.menuSecondsPart.value,'30');
   }
+});
+
+test('editing saves the selected category and follows it in the list',()=>{
+  const source=app.slice(app.indexOf('function saveMenu('),app.indexOf('function renderCategoryListScreen('));
+  const menu={id:'m',categoryId:'old'};
+  const fields={addCategoryBtn:{value:'new'},menuName:{value:'練習'},menuMinutes:{value:'2'},menuSecondsPart:{value:'30'}};
+  const context={state:{categories:[{id:'old'},{id:'new'}],menus:[menu]},editingMenuId:'m',listCategory:'old',addCategoryId:'old',$:id=>fields[id],clearFieldErrors(){},fixedMode:()=>false,findMenu:()=>menu,mutateAndSave:fn=>{fn();return true},resetAddForm(){},showScreen(){},showToast(){}};
+  vm.runInNewContext(`${source}\nsaveMenu();`,context);
+  assert.equal(menu.categoryId,'new');
+  assert.equal(menu.seconds,150);
+  assert.equal(context.listCategory,'new');
+});
+
+test('adding a menu starts in the requested list category',()=>{
+  const source=app.slice(app.indexOf('function resetAddForm('),app.indexOf('function renderAddScreen('));
+  const context={state:{categories:[{id:'first'},{id:'selected'}]},$:()=>({}),setFixedSwitch(){},clearFieldErrors(){},updateTimeLabel(){}};
+  vm.runInNewContext(`${source}\nresetAddForm('selected');`,context);
+  assert.equal(context.addCategoryId,'selected');
+  vm.runInNewContext("resetAddForm('all');",context);
+  assert.equal(context.addCategoryId,'first');
 });
 
 test('image time toggle and solo summary render the requested text',()=>{

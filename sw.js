@@ -1,5 +1,5 @@
-const CACHE_NAME = 'training-menu-pwa-v20260909-category-2';
-const ASSETS = ['./','./index.html','./styles.css?v=20260909-2','./app.js?v=20260909-2','./manifest.webmanifest','./privacy.html','./legal.css?v=20260805-1','./icons/favicon-32-v3.png','./icons/apple-touch-icon-v3.png','./icons/icon-192-v3.png','./icons/icon-512-v3.png'];
+const CACHE_NAME = 'training-menu-pwa-v20260909-category-3';
+const ASSETS = ['./','./index.html','./styles.css?v=20260909-3','./app.js?v=20260909-3','./manifest.webmanifest','./privacy.html','./legal.css?v=20260805-1','./icons/favicon-32-v3.png','./icons/apple-touch-icon-v3.png','./icons/icon-192-v3.png','./icons/icon-512-v3.png'];
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS)));
   self.skipWaiting();
